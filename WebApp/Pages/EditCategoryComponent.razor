@@ -1,0 +1,68 @@
+﻿@page "/editcategory/{categoryID}"
+
+@inject NavigationManager NavigationManager
+@inject IAddCategoryUseCase AddCategoryUseCase
+@inject IGetCategoryByIDUseCase GetCategoryByIDUseCase
+@inject IEditCategoryUseCase EditCategoryUseCase
+
+<h3>Edit Category</h3>
+
+@if (category != null)
+{
+    <EditForm Model="category" OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <InputText id="name" @bind-Value="category.Name" class="form-control"></InputText>
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <InputText id="description" @bind-Value="category.Description" class="form-control"></InputText>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-danger" @onclick="OnCancel">Cancel</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string CategoryID { get; set; }
+
+    private Category category;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        category = new Category();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (int.TryParse(this.CategoryID, out int iCategoryID))
+        {
+            // Normal bir db ile calisirken alt kisimdaki sekilde kullaniriz. Suan In Memory'de calistigimiz icin kategori guncellerken 'cancel' butonuna basilsa da guncelleme yapiyor.
+            // Bu problem iki objenin ayni referansi gostermesinden kaynaklaniyor. Simdilik In Memory'de calistigimiz surece farkli bir yol izleyecegiz.
+            //this.category = GetCategoryByIDUseCase.Execute(iCategoryID);
+            
+            Category tempCategory = GetCategoryByIDUseCase.Execute(iCategoryID);
+            this.category = new Category { CategoryID = tempCategory.CategoryID, Description = tempCategory.Description, Name = tempCategory.Name };
+        }
+    }
+
+
+    private void OnValidSubmit()
+    {
+        EditCategoryUseCase.Execute(this.category);
+        NavigationManager.NavigateTo("/categories");
+    }
+
+    private void OnCancel()
+    {
+        NavigationManager.NavigateTo("/categories");
+    }
+}
