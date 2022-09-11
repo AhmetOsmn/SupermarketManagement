@@ -12,6 +12,10 @@ using WebApp.Data;
 // todo: OnInitialized metodu arastirilacak.
 // todo: StringComparison.OrdinalIgnoreCase  arastirilacak.
 // todo: out int iCategoryID yapisi arastirilacak.
+// todo: <select> icerisindeki @bind komutu arastirilacak.
+// todo: StateHasChanged arastirilacak.
+// todo: public EventCallback<Product> OnProductSelected { get; set; } yapisi arastirilacak.
+// todo: InvokeAsync() arastirilacak.
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +40,8 @@ builder.Services.AddTransient<IAddProductUseCase, AddProductUseCase>();
 builder.Services.AddTransient<IEditProductUseCase, EditProductUseCase>();
 builder.Services.AddTransient<IGetProductByIDUseCase, GetProductByIDUseCase>();
 builder.Services.AddTransient<IDeleteProductUseCase, DeleteProductUseCase>();
+builder.Services.AddTransient<IViewProductsByCategoryID, ViewProductsByCategoryID>();
+builder.Services.AddTransient<ISellProductUseCase, SellProductUseCase>();
 
 
 var app = builder.Build();
