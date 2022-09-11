@@ -1,6 +1,8 @@
 ﻿@page "/products"
 
+@inject NavigationManager NavigationManager
 @inject IViewProductsUseCase ViewProductsUseCase
+@inject IDeleteProductUseCase DeleteProductUseCase
 @inject IGetCategoryByIDUseCase GetCategoryByIDUseCase
 
 <h3>Products</h3>
@@ -23,16 +25,18 @@
             {
                 <tr>
                     <td>@product.Name</td>
-                    <td>@GetCategoryByIDUseCase.Execute(product.CategoryID)?.Name</td>
-                    <td>@(Math.Round(product.Price,2))</td>
+                    <td>@GetCategoryByIDUseCase.Execute(product.CategoryID.Value)?.Name</td>
+                    <td>@(Math.Round(product.Price.Value,2))</td>
                     <td>@product.Quantity</td>
-                    <td><button type="button" @onclick="@(() => EditProduct(product))" class="btn btn-info">Edit</button></td>
-                    <td><button type="button" @onclick="@(() => DeleteProduct(product.ProductID))" class="btn btn-warning">Delete</button></td>
+                    <td><button type="button" @onclick="@(() => OnEditProduct(product))" class="btn btn-info">Edit</button></td>
+                    <td><button type="button" @onclick="@(() => OnDeleteProduct(product.ProductID))" class="btn btn-warning">Delete</button></td>
                 </tr>
             }
         </tbody>
     </table>
 }
+<br />
+<button type="button" @onclick="OnClickAddProduct" class="btn btn-primary">Add Product</button>
 
 @code {
     private IEnumerable<Product> products;
@@ -44,13 +48,18 @@
         products = ViewProductsUseCase.Execute();
     }
 
-    private void EditProduct(Product product)
+    private void OnEditProduct(Product product)
     {
-
+        NavigationManager.NavigateTo($"/editproduct/{product.ProductID}");
     }
 
-    private void DeleteProduct(int productID)
+    private void OnDeleteProduct(int productID)
     {
-        
+        DeleteProductUseCase.Execute(productID);
+    }
+
+    private void OnClickAddProduct()
+    {
+        NavigationManager.NavigateTo("/addproduct");
     }
 }
