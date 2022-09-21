@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Plugins.DataStore.InMemory;
 using Plugins.DataStore.SQL;
+using Plugins.DataStore.SQL.Repositories;
 using UseCases;
 using UseCases.Abstract.ITransaction;
 using UseCases.Concrete.Transaction;
@@ -30,10 +31,17 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddDbContext<MarketContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
 
-// In Memory icin Dependency Injection.
-builder.Services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
-builder.Services.AddScoped<IProductRepository, ProductInMemoryRepository>();
-builder.Services.AddScoped<ITransactionRepository, TransactionInMemoryRepository>();
+//// In Memory icin Dependency Injection.
+//builder.Services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
+//builder.Services.AddScoped<IProductRepository, ProductInMemoryRepository>();
+//builder.Services.AddScoped<ITransactionRepository, TransactionInMemoryRepository>();
+
+// EF icin DIs
+builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+builder.Services.AddTransient<IProductRepository, ProductRepository>();
+builder.Services.AddTransient<ITransactionRepository, TransactionRepository>();
+
+
 
 // Use Cases ve Repository'ler icin Dependency Injection.
 builder.Services.AddTransient<IViewCategoriesUseCase, ViewCategoriesUseCase>();
