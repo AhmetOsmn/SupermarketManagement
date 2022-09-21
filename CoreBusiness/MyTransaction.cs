@@ -1,7 +1,10 @@
-﻿namespace CoreBusiness
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CoreBusiness
 {
     public class MyTransaction
     {
+        [Key]
         public int TransactionID { get; set; }
         public DateTime TimeStamp { get; set; }
         public int ProductID { get; set; }

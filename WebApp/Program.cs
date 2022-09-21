@@ -1,5 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using Plugins.DataStore.InMemory;
+using Plugins.DataStore.SQL;
 using UseCases;
+using UseCases.Abstract.ITransaction;
+using UseCases.Concrete.Transaction;
 using UseCases.DataStorePluginInterfaces;
 using UseCases.Products;
 using UseCases.UseCaseInterfaces.ICategory;
@@ -19,10 +23,12 @@ using WebApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddDbContext<MarketContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
 
 // In Memory icin Dependency Injection.
 builder.Services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
@@ -46,6 +52,7 @@ builder.Services.AddTransient<ISellProductUseCase, SellProductUseCase>();
 
 builder.Services.AddTransient<IRecordTransactionUseCase, RecordTransactionUseCase>();
 builder.Services.AddTransient<IGetTodayTransactionUseCase, GetTodayTransactionUseCase>();
+builder.Services.AddTransient<IGetTransactionsUseCase, GetTransactionsUseCase>();
 
 
 
